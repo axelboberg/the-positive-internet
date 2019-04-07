@@ -1,0 +1,16 @@
+[data-icon] {
+  padding-left: 1.7em;
+  background-size: 1.05em;
+  background-position: 0.1em;
+  background-repeat: no-repeat;
+}
+
+[data-icon-placement="right"] {
+  padding-left: 0;
+  padding-right: 1.6em;
+  background-position: calc(100% - 0.1em);
+}
+
+[data-icon="arrow-round"] {
+  background-image: url('./assets/icon/arrow-round.svg');
+}
