@@ -36,7 +36,7 @@ module.exports = class Input extends Nanocomponent {
     const textareaEl = html`
       <textarea rows="2"
                 cols="50"
-                placeholder="Write something nice"
+                placeholder="Say something nice"
                 maxlength="42"
                 onkeyup="${check()}"></textarea>
     `

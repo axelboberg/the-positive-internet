@@ -1,16 +1,18 @@
-html, body {
+html {
+  height: 100%;
+  background: #FFF4FC;
+}
+
+body {
   width: 100%;
-  height: 100vh;
+  min-height: 100%;
   margin: 0;
   
+  font-size: 1.1em;
   font-family: basic-sans, sans-serif;
   color: black;
 
   overflow-x: hidden;
-}
-
-html {
-  background: #FFF4FC;
 }
 
 * {
@@ -18,11 +20,15 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.View {
+.View,
+.View--center {
   display: flex;
   width: 100%;
   height: 100%;
+}
 
+.View--center {
+  position: absolute;
   align-items: center;
 }
 
@@ -50,6 +56,10 @@ html {
   text-align: left;
 }
 
+a {
+  color: black;
+}
+
 input,
 textarea {
   font-family: basic-sans, sans-serif;
@@ -57,8 +67,8 @@ textarea {
 
 article {
   width: 90%;
-  max-width: 350px;
-  font-size: 1.5em;
+  max-width: 450px;
+  font-size: 1.3em;
 }
 
 .Button,
@@ -138,6 +148,10 @@ h5, .u-heading--5 {
   padding: 20px;
 }
 
+.u-padding--40 {
+  padding: 40px;
+}
+
 .u-margin--20 {
   margin-top: 20px;
   margin-bottom: 20px;
@@ -154,6 +168,10 @@ h5, .u-heading--5 {
 
 .u-width--250 {
   width: 250px;
+}
+
+.u-width--rel--90 {
+  width: 90%;
 }
 
 .u-color--red {

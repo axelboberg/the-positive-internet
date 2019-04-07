@@ -12,9 +12,9 @@ const message = new Message()
 
 module.exports = (state, emit) => {
   return html`
-    <div class="View">
+    <div class="View--center">
       ${header([{ text: 'What is this?', href: '/about' }])}
-      <div class="u-align--center">
+      <div class="u-align--center u-width--rel--90">
         ${message.render(state, emit)}
       </div>
       ${input.render()}

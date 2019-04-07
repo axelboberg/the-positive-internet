@@ -28,7 +28,7 @@ module.exports = class Message extends Nanocomponent {
             ${this.message.text}
           </div>
           <div class="u-heading--5">
-            By someone in ${this.message.country}
+            Said someone in ${this.message.country}
           </div>
         </div>
         <div class="u-margin--20">
