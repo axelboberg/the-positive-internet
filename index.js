@@ -25,7 +25,7 @@ app.use('/api/*', (req, res, next) => {
   const payload = {
     'method': req.method,
     'body': req.body,
-    'ip': req.ip
+    'ip': req.headers['x-forwarded-for'] || req.connection.remoteAddress
   }
 
   router.execute(req.originalUrl, payload)
