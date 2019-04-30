@@ -5,7 +5,7 @@
 const url = require('url')
 const choo = require('choo')
 const app = choo()
-const expect = require('./expect')
+const ssr = require('./ssr')
 
 if (!module.parent) {
   /**
@@ -59,7 +59,7 @@ require('./icons.css')
      * Use expect if the code is
      * run on the server
      */
-    expect.expect(app.state.href || '/', loc, api, trans, data)
+    ssr.expect(app.state.href || '/', loc, api, trans, data)
     return Promise.resolve()
   }
 }
