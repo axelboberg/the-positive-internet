@@ -18,7 +18,7 @@ module.exports = merge(common, {
   },
   'plugins': [
     new htmlPlugin({
-      templateContent: template({
+      templateContent: template('/', {
         api: 'http://localhost:3000'
       })
     })
