@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "nodemon index.js",
     "build": "npm run clean | webpack --config webpack.prod.js",
     "dev": "webpack-dev-server --config webpack.dev.js",
     "clean": "rm -r ./dist"
@@ -19,6 +19,7 @@
     "html-entities": "^1.2.1",
     "ignore-styles": "^5.0.1",
     "iplocation": "^6.1.0",
+    "nodemon": "^1.18.11",
     "obj-router": "^1.0.3",
     "request": "^2.88.0"
   },
