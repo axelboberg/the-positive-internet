@@ -1,5 +1,5 @@
 /**
- * Axel Boberg © 2018
+ * Axel Boberg © 2019
  */
 
 const routes = {}
@@ -12,10 +12,10 @@ function emptyTransformation (data) {
  * Expect certain data for a route
  * @param { String } route
  * @param { String } location The location on the state object where the data is expected to be retained, as dot-notation
- * @param { String } identifier An identifier used to know what data is requested
+ * @param { String } id An identifier used to know what data is requested
  * @param { Object } data Payload data that will be provided to the data source
  */
-exports.expect = (route, location, identifier, transformation, data) => {
+exports.expect = (route, location, id, transformation, data) => {
   if (!routes[route]) routes[route] = {}
   if (typeof transformation !== 'function') {
     transformation = emptyTransformation
@@ -23,7 +23,7 @@ exports.expect = (route, location, identifier, transformation, data) => {
 
   routes[route][location] = {
     location: location,
-    identifier: identifier,
+    id: id,
     data: data || {},
     transformation: transformation
   }
