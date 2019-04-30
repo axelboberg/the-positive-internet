@@ -63,5 +63,8 @@ typings/
 # macos
 *.DS_Store
 
-# application data
+# Application data
 data.json
+
+# Build directory
+dist/
