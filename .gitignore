@@ -68,3 +68,6 @@ data.json
 
 # Build directory
 dist/
+
+# Built assets-file
+assets.json
