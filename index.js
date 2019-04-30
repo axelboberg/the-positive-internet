@@ -6,21 +6,28 @@
 require('dotenv').config()
 const path = require('path')
 
-const Router = require('obj-router')
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 
+// Object router
+const Router = require('obj-router')
 const api = require('./lib/root.routes')
 const router = new Router(api)
 
-const expect = require('./app/expect')
+// Rendering dependencies
+const ssr = require('./app/ssr')
 const template = require('./app/template')
 const assets = require('./assets.json')
 
 const PORT = process.env.PORT || 3000
 
 app.use(bodyParser.json())
+
+/**
+ * Set up the object-router on top of Express,
+ * which allows for calling the API internally
+ */
 app.use('/api/*', (req, res, next) => {
   const payload = {
     'method': req.method,
@@ -49,58 +56,61 @@ app.get('/favicon.ico', (req, res, next) => {
 })
 
 /**
- * Collect the data expected by
- * the client for a specific request
- * @param { Request } req the request to satisfy
- * @returns { Promise<Object> } a satified state
+ * Populate a target object with data that
+ * the client application expects for a
+ * certain route
+ * 
+ * @param { Object } target 
+ * @param { String } route 
+ * @param { Function } render 
+ * @returns { Promise<Object> }
  */
-function satisfy(route, req, render, state = {}) {
-  if (!expect.expecations(route)) render(route)
+async function populate (target, route, render) {
+  if (!ssr.expecations(route)) render(route)
 
-  const expecations = expect.expecations(route)
-  const promises = expecations
-    .map(ex => {
-      req.body = ex.data
-      
-      const promise = router.execute(ex.identifier, {
-        'method': req.method,
-        'body': req.body
-      })
-      if (!promise) return
-      
-      return promise
-        .then(data => expect.insert(state, ex.location, ex.transformation(data)))
+  const expectations = ssr
+    .expecations(route)
+    .map (({ id, data, location, transformation }) => {
+      router.execute(id, { method: 'GET', body: data })
+        .then(data => {
+          ssr.insert(target, location, transformation(data))
+        })
     })
 
-  return Promise.all(promises)
-    .then(() => state)
-    .catch(() => state)
+  await Promise.all(expectations)
+  return target
 }
 
-function renderClient (req, res, next) {
-  let route = req.path
+/**
+ * Render the client application as HTML
+ * 
+ * @param { String } route 
+ * @param { Object } state 
+ * @returns { Promise<String> }
+ */
+async function render (route, state = {}) {
+  await populate(state, route, template)
+  return template(route, {
+    state: state,
+    assets: assets.assets
+  })
+}
 
-  function render (route, state = {}) {
-    return template({
-      'state': state,
-      'assets': assets.assets,
-      'state': state,
-      'route': route
-    })
-  }
-
-  satisfy(route, req, render)
-    .then(state => res.send(render(route, state)))
+/**
+ * Render the client-application for
+ * all routes not yet covered by a handler
+ */
+app.get('*', (req, res, next) => {
+  render(req.path, {})
+    .then(html => res.send(html))
     .catch(next)
-}
+})
 
-app.get('*', renderClient)
-
+/**
+ * Handle errors and make sure that a
+ * JSON-object is returned to the client
+ */
 app.use((err, req, res, next) => {
-  if (process.env.NODE_ENV === 'development') {
-    console.error(err)
-  }
-
   if (!err.code) {
     err.message = 'Internal server error'
   }

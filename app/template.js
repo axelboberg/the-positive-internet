@@ -5,6 +5,11 @@
 const path = require('path')
 const ignoreStyles = require('ignore-styles')
 
+/**
+ * Ignore required modules that are either
+ * image files or css files, since those
+ * should be required on the client side only.
+ */
 ignoreStyles.default(undefined, (module, filename) => {
   const ext = /(?:([^.]+))?$/.exec(filename)[0]
 
@@ -16,7 +21,7 @@ ignoreStyles.default(undefined, (module, filename) => {
 
 const app = require('./index.js')
 
-const assetTemplates = {
+const ASSET_TEMPLATES = {
   'css': path => {
     return `<link rel="stylesheet" href="${path}" type="text/css">`
   },
@@ -25,15 +30,25 @@ const assetTemplates = {
   }
 }
 
-module.exports = opts => {
+module.exports = (route, opts) => {
+
+  /**
+   * Render HTML-tags for any assets
+   */
   const assets = (opts.assets || [])
     .map(asset => {
       const ext = /(?:([^.]+))?$/.exec(asset)[0]
-      if (!assetTemplates[ext]) return ''
-      return assetTemplates[ext](asset)
+      if (!ASSET_TEMPLATES[ext]) return ''
+      return ASSET_TEMPLATES[ext](asset)
     })
     .join('')
 
+  /**
+   * Insert the api-location to the state
+   * if it is provided as an option.
+   * This allows for running Webpack Dev Server
+   * while still calling the correct API
+   */
   const state = (function () {
     const state = opts.state || {}
     if (opts.api) state.api = opts.api
@@ -56,10 +71,7 @@ module.exports = opts => {
         ${assets}
       </head>
       <body>
-        ${ 
-           opts.route ?
-           app.toString(opts.route, opts.state || {}) : ''
-        }
+        ${app.toString(route, opts.state || {})}
       </body>
     </html>
   `
